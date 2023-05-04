@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eye Tracking Visualization</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+    
+    <header>
+        <h1>Visualise Eye Tracking</h1>
+        <div class="header-button">
+            <button id="record-eye-tracking">Record Eye Tracking</button>
+        </div>
+    </header>
+   
+    <main>
+        <div class="container">
+            <div class="file-input-container">
+                <div class="smoothing-container">
+                    <label for="smoothing-level">Smoothing Level:</label>
+                    <select id="smoothing-level">
+                        <option value="0.1">0.1</option>
+                        <option value="0.2">0.2</option>
+                        <option value="0.3" selected>0.3</option>
+                        <option value="0.4">0.4</option>
+                        <option value="0.5">0.5</option>
+                        <option value="0.6">0.6</option>
+                        <option value="0.7">0.7</option>
+                        <option value="0.8">0.8</option>
+                        <option value="0.9">0.9</option>
+                    </select>
+                    <button id="apply-smoothing" type="button">Apply</button>
+                </div>
+                <label for="file-input"><h2>Upload CSV File:<h2></h3></label>
+                <input type="file" id="file-input" accept=".csv">
+                
+            </div>
+            <div class="canvas-container">
+                <h3>Original</h3>
+                <canvas id="eye-tracking-canvas-original" width="1920" height="1280"></canvas>
+            </div>
+            <div class="canvas-container">
+                <h3>Smoothed</h3>
+                <canvas id="eye-tracking-canvas-smooth" width="1920" height="1280"></canvas>
+            </div>
+            </div>
+            
+        </div>
+    </main>
+    <footer>
+        <p>Made by Mustafa Mehmood FYP Diagnosing Mental Diseases with Eye Tracking</p>
+    </footer>
+    <script src="scripts.js"></script>
+</body>
+</html>
+
+

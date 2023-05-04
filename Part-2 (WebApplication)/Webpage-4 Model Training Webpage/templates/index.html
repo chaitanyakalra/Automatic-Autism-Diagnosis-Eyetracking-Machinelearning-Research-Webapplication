@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Model Retraining</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Retrain Model</h1>
+        <hr>
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <h4>Select Dataset: </h4>
+            <label for="dataset" class="custom-file-upload">Choose File</label>
+            <input type="file" name="dataset" id="dataset" accept=".zip" onchange="displayFileName(this)">
+            <span class="file-name-display" id="file-name-display"></span>
+            <button type="submit">Upload Dataset</button>
+        </form>
+        <hr>
+        <!-- model upload -->
+<form action="{{ url_for('upload_model') }}" method="POST" enctype="multipart/form-data">
+  <label for="model_upload">Upload your model (Optional):</label>
+  <input type="file" id="model_upload" name="model_upload" accept=".h5" style="display:none">
+  <label for="model_upload" class="custom-file-upload">Choose File</label>
+  <span class="file-name-display" id="model_file_name">No model chosen</span>
+  <button type="submit">Upload Model</button>
+</form>
+<hr>
+        
+        <form action="/" method="post">
+            <h4>Select Model: </h4>
+            <select name="model" required>
+                {% for model in models %}
+                <option value="{{ model }}">{{ model }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="epochs">Number of epochs:</label>
+            <input type="number" name="epochs" min="1" value="1" required> <!-- Default epoch value 1 -->
+            <hr>
+            <!-- Display flashed messages -->
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <ul class="flashes">
+                {% for message in messages %}
+                <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% endwith %}
+            
+            <button type="submit">Start Training</button>
+        </form>
+        
+        {% if file_exists("model_retrained.h5") %}
+            <a href="{{ url_for('download') }}" class="button" id="download-button">Download Retrained Model</a>
+        {% endif %}
+    </div>
+</body>
+<script src="{{ url_for('static', filename='main.js') }}"></script>
+</html>
+
+
+

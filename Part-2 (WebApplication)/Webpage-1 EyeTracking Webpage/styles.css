@@ -1,0 +1,198 @@
+/* General body styles */
+body {
+    display: flex;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-image: url('https://image.freepik.com/free-vector/dark-purple-seamless-geometric-pattern_278395-310.jpg');
+    background-size: 100% 100;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+/* Add a blurred background */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: inherit;
+    filter: blur(5px);
+    z-index: -1;
+}
+
+/* Header styles */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+}
+
+/* Header title styles */
+h1 {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* Button styles */
+button {
+    background-color: #4caf50;
+    color: #ffffff;
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.3s;
+    margin-right: 8px;
+    margin-bottom: 8px;
+}
+
+/* Button hover styles */
+button:hover {
+    background-color: #3e8e41;
+}
+
+/* Container styles */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+}
+
+/* Button group styles */
+.button-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+/* Model selection styles */
+.model-selection {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+/* Timestamp and coordinates styles */
+.info {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.timestamp, .coordinates {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* Footer styles */
+footer {
+    background-color: #1c1c1c;
+    color: #aaaaaa;
+    text-align: center;
+    padding: 0.5rem;
+    font-size: 14px;
+}
+
+/* Slider container styles */
+.slider-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.slider-container label {
+    font-size: 1.2rem;
+    color: #ffffff;
+    margin-right: 0.5rem;
+}
+
+.slider-container input[type="range"] {
+    width: 50%;
+    margin-right: 0.5rem;
+}
+
+.slider-container #interval-display {
+    font-size: 1.2rem;
+    color: #ffffff;
+    margin-right: 0.5rem;
+}
+
+/* Calibration popup */
+.calibration-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 100;
+  }
+  
+  .calibration-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-items: center;
+    grid-gap: 5px;
+  }
+  
+  .calibration-point {
+    width: 15px;
+    height: 15px;
+    background-color: rgb(255, 67, 67);
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  
+  .calibrated {
+    background-color: green;
+  }
+  
+  .close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+  }
+  .calibration-point.green {
+    background-color: green;
+  }
+
+  /* Marquee styles */
+#marquee-message {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    font-size: 14px;
+    color: white;
+    white-space: nowrap;
+  }
+  
+  .control-button[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+  
