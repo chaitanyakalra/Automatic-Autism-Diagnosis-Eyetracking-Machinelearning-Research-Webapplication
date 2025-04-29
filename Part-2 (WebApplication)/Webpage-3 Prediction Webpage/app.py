@@ -7,7 +7,7 @@ from PIL import Image
 
 app = Flask(__name__)
 CORS(app)
-models_path = 'TrainedModels/'
+models_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "TrainedModels")
 
 @app.route('/')
 def index():
@@ -23,7 +23,7 @@ def get_models():
 def predict():
     # Load the selected model
     model_name = request.form.get("model")
-    model = tf.keras.models.load_model(os.path.join(models_path, model_name))
+    model = tf.keras.models.load_model(os.path.join(models_path, model_name), compile=False)
 
     # Load and preprocess the uploaded image
     image = request.files.get("image")

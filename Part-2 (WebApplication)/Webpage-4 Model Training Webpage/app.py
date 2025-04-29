@@ -9,6 +9,9 @@ from keras.models import load_model
 from keras.preprocessing.image import ImageDataGenerator
 from sklearn.model_selection import train_test_split
 from PIL import Image
+from flask_cors import CORS
+import tensorflow as tf
+import io
 
 ##Preprocessing functions 
 def load_images_from_folder(folder):
@@ -28,8 +31,14 @@ def preprocess_images(images):
     return [grayscale_to_rgb(img) for img in gray_images]
 
 app = Flask(__name__)
+CORS(app)
 app.config['UPLOAD_FOLDER'] = 'uploads'
+models_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "TrainedModels")
 app.secret_key = 'secret-key'
+
+# Create necessary directories if they don't exist
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+os.makedirs(models_path, exist_ok=True)
 
 # Route for uploading dataset
 @app.route("/upload", methods=["POST"])
@@ -48,7 +57,7 @@ def upload_model():
     if request.method == "POST":
         model = request.files.get('model_upload')
         if model:
-            model.save(os.path.join(os.path.dirname(os.path.abspath(__file__)), model.filename))
+            model.save(os.path.join(models_path, model.filename))
             flash("Model successfully uploaded.")
         return redirect(url_for("home"))
 
@@ -57,8 +66,12 @@ def upload_model():
 # Route for handling model selection and training
 @app.route('/', methods=['GET', 'POST'])
 def home():
-    models = [os.path.basename(f) for f in glob.glob('*.h5')]
-
+    # Get all .h5 files from the TrainedModels directory
+    models = [os.path.basename(f) for f in glob.glob(os.path.join(models_path, '*.h5'))]
+    
+    if not models:
+        flash("No models found. Please upload a model first.")
+    
     if request.method == 'POST':
         epochs = request.form.get('epochs')
         model_name = request.form.get('model')
@@ -66,7 +79,7 @@ def home():
         if epochs and model_name:
             dataset_path = os.path.join(app.config['UPLOAD_FOLDER'], 'dataset.zip')
             if os.path.isfile(dataset_path):
-                retrain_model(int(epochs), model_name)
+                retrain_model(int(epochs), os.path.join(models_path, model_name))
             else:
                 flash("Dataset not found. Please upload the dataset before Starting Training.")
     
@@ -80,13 +93,12 @@ def retrain_model(epochs, model_filename):
     # Load the selected model
     model = load_model(model_filename)
 
-    
     # Extract the dataset
     import zipfile
     with zipfile.ZipFile(os.path.join(app.config['UPLOAD_FOLDER'], 'dataset.zip'), 'r') as zip_ref:
         zip_ref.extractall(app.config['UPLOAD_FOLDER'])
 
-     # Load and preprocess images
+    # Load and preprocess images
     dataset_folder = os.path.join(app.config['UPLOAD_FOLDER'], 'dataset')
 
     # Automatically detect the folder names for the two classes
@@ -108,8 +120,9 @@ def retrain_model(epochs, model_filename):
     # Retrain the model
     history = model.fit(X_train, y_train, batch_size=32, epochs=epochs, validation_split=0.2)
 
-    # Save the retrained model
-    model.save('model_retrained.h5')
+    # Save the retrained model in the TrainedModels directory
+    retrained_model_path = os.path.join(models_path, 'model_retrained.h5')
+    model.save(retrained_model_path)
 
     # Display training accuracy, epoch number, and loss
     for epoch, acc, loss in zip(range(1, epochs + 1), history.history['accuracy'], history.history['loss']):
@@ -153,9 +166,10 @@ def delete_file(filepath):
 @app.route('/download', methods=['GET'])
 def download():
     try:
-        response = send_from_directory(directory='', path='model_retrained.h5', as_attachment=True)
+        retrained_model_path = os.path.join(models_path, 'model_retrained.h5')
+        response = send_from_directory(directory=models_path, path='model_retrained.h5', as_attachment=True)
 
-        t = threading.Thread(target=delete_file, args=('model_retrained.h5',))
+        t = threading.Thread(target=delete_file, args=(retrained_model_path,))
         t.start()
 
         return response
@@ -166,7 +180,7 @@ def download():
 
 
 def file_exists(filepath):
-    return os.path.isfile(filepath)
+    return os.path.isfile(os.path.join(models_path, filepath))
 
 
 app.jinja_env.globals['file_exists'] = file_exists
